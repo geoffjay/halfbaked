@@ -14,6 +14,9 @@ defmodule Halfbaked.Accounts.User do
 
     has_one :profile, Halfbaked.Accounts.Profile
     has_many :ideas, Halfbaked.Ideas.Idea
+    has_many :comments, Halfbaked.Ideas.Comment
+    has_many :stars, Halfbaked.Ideas.Star
+    has_many :shares, Halfbaked.Ideas.Share
 
     timestamps(type: :utc_datetime)
   end
