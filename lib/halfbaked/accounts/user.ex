@@ -9,6 +9,11 @@ defmodule Halfbaked.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
     field :is_oauth_user, :boolean, default: false
+    field :provider, :string, default: "email"
+    field :provider_id, :string
+
+    has_one :profile, Halfbaked.Accounts.Profile
+    has_many :ideas, Halfbaked.Ideas.Idea
 
     timestamps(type: :utc_datetime)
   end
