@@ -1,0 +1,46 @@
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <h2 class="text-xl font-semibold"><%= @document.title %></h2>
+    <div class="text-sm text-zinc-500">In idea: <a href={~p"/ideas/#{@idea.id}"} class="underline"><%= @idea.title %></a></div>
+  </div>
+  <div class="text-sm space-x-2">
+    <.link href={~p"/ideas/#{@idea.id}/documents/#{@document.id}/edit"} class="underline">Edit</.link>
+    <.link href={~p"/ideas/#{@idea.id}/documents/#{@document.id}"} method="delete" data-confirm="Delete?" class="text-red-600">Delete</.link>
+  </div>
+</div>
+
+<article class="prose max-w-none">
+  <pre class="whitespace-pre-wrap"><%= @document.content %></pre>
+  </article>
+
+<%= if @current_user do %>
+  <div class="mt-4 flex gap-2">
+    <.link href={~p"/documents/#{@document.id}/ai/summarize"} method="post" class="px-2 py-1 rounded border text-sm">Summarize</.link>
+    <.link href={~p"/documents/#{@document.id}/ai/complete"} method="post" class="px-2 py-1 rounded border text-sm">Complete</.link>
+  </div>
+<% end %>
+
+<section class="mt-6">
+  <h3 class="font-semibold mb-2">Comments</h3>
+  <div class="space-y-2">
+    <%= for c <- @comments do %>
+      <div class="border rounded px-3 py-2">
+        <div class="text-sm"><%= c.content %></div>
+        <div class="text-xs text-zinc-500"><%= Calendar.strftime(c.inserted_at, "%Y-%m-%d %H:%M") %></div>
+      </div>
+    <% end %>
+  </div>
+  <%= if @current_user do %>
+    <.simple_form for={%{}} action={~p"/comments"}>
+      <input type="hidden" name="comment[commentable_type]" value="Document" />
+      <input type="hidden" name="comment[commentable_id]" value={@document.id} />
+      <div>
+        <textarea name="comment[content]" rows="3" class="w-full rounded border px-3 py-2" placeholder="Add a comment"></textarea>
+      </div>
+      <:actions>
+        <.button class="text-sm">Comment</.button>
+      </:actions>
+    </.simple_form>
+  <% end %>
+</section>
+

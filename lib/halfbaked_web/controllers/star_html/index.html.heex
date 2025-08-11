@@ -1,0 +1,10 @@
+<h2 class="text-xl font-semibold mb-4">Starred</h2>
+<div class="space-y-2 text-sm">
+  <%= for s <- @stars do %>
+    <div class="border rounded px-3 py-2">
+      <div class="text-xs text-zinc-500"><%= s.starable_type %></div>
+      <div class="font-medium truncate">ID: <%= s.starable_id %></div>
+    </div>
+  <% end %>
+</div>
+

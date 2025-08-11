@@ -1,0 +1,159 @@
+<div class="flex items-start justify-between mb-4">
+  <div>
+    <h2 class="text-xl font-semibold"><%= @idea.title %></h2>
+    <p class="text-sm text-zinc-600"><%= @idea.description %></p>
+    <div class="mt-2 space-x-2">
+      <%= for tag <- @tags do %>
+        <span class="inline-block text-xs px-2 py-1 rounded bg-zinc-100"><%= tag.name %></span>
+      <% end %>
+    </div>
+  </div>
+  <div class="text-sm">
+    <span class="mr-2">Stars: <%= @star_count %></span>
+    <%= if @current_user do %>
+      <%= if @starred do %>
+        <.link href={~p"/stars"} method="delete" params={[{"starable_type", "Idea"}, {"starable_id", @idea.id}]} class="text-zinc-700">Unstar</.link>
+      <% else %>
+        <.link href={~p"/stars"} method="post" params={[{"starable_type", "Idea"}, {"starable_id", @idea.id}]} class="text-zinc-700">Star</.link>
+      <% end %>
+    <% end %>
+  </div>
+  </div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="md:col-span-2 space-y-6">
+    <section>
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-semibold">Plans</h3>
+        <%= if @current_user do %>
+          <.simple_form for={%{}} action={~p"/ideas/#{@idea.id}/plans"}>
+            <input type="text" name="plan[title]" placeholder="New plan title" class="rounded border px-2 py-1 text-sm" />
+            <:actions>
+              <.button class="text-xs">Add</.button>
+            </:actions>
+          </.simple_form>
+        <% end %>
+      </div>
+      <div class="space-y-2">
+        <%= for plan <- @idea.plans do %>
+          <div class="border rounded p-3">
+            <div class="flex items-center justify-between">
+              <div class="font-medium"><%= plan.title %></div>
+              <div class="text-xs">
+                <.link href={~p"/ideas/#{@idea.id}/plans/#{plan.id}"} method="delete" data-confirm="Delete plan?" class="text-red-600">Delete</.link>
+              </div>
+            </div>
+
+            <div class="mt-2">
+              <div class="flex items-center justify-between mb-1">
+                <div class="text-sm font-medium">Tasks</div>
+                <.simple_form for={%{}} action={~p"/plans/#{plan.id}/tasks"}>
+                  <input type="text" name="task[title]" placeholder="New task title" class="rounded border px-2 py-1 text-sm" />
+                  <:actions>
+                    <.button class="text-xs">Add</.button>
+                  </:actions>
+                </.simple_form>
+              </div>
+              <div class="space-y-1">
+                <%= for task <- plan.tasks || [] do %>
+                  <div class="flex items-center justify-between text-sm border rounded px-2 py-1">
+                    <div>
+                      <span class="font-medium"><%= task.title %></span>
+                      <span class="ml-2 text-xs px-2 py-0.5 rounded border"><%= task.status %></span>
+                    </div>
+                    <div class="space-x-2">
+                      <.link href={~p"/plans/#{plan.id}/tasks/#{task.id}"} method="delete" data-confirm="Delete task?" class="text-red-600">Delete</.link>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <section>
+      <div class="flex items-center justify-between mb-2">
+        <h3 class="font-semibold">Documents</h3>
+        <%= if @current_user do %>
+          <.link href={~p"/ideas/#{@idea.id}/documents/new"} class="text-sm underline">New Document</.link>
+        <% end %>
+      </div>
+      <div class="space-y-2">
+        <%= for doc <- @idea.documents do %>
+          <div class="flex items-center justify-between border rounded px-3 py-2">
+            <a href={~p"/ideas/#{@idea.id}/documents/#{doc.id}"} class="font-medium hover:underline"><%= doc.title %></a>
+            <div class="text-xs">
+              <.link href={~p"/ideas/#{@idea.id}/documents/#{doc.id}"} method="delete" data-confirm="Delete document?" class="text-red-600">Delete</.link>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="font-semibold mb-2">Comments</h3>
+      <div class="space-y-2">
+        <%= for c <- @comments do %>
+          <div class="border rounded px-3 py-2">
+            <div class="text-sm"><%= c.content %></div>
+            <div class="text-xs text-zinc-500"><%= Calendar.strftime(c.inserted_at, "%Y-%m-%d %H:%M") %></div>
+          </div>
+        <% end %>
+      </div>
+      <%= if @current_user do %>
+        <.simple_form for={%{}} action={~p"/comments"}>
+          <input type="hidden" name="comment[commentable_type]" value="Idea" />
+          <input type="hidden" name="comment[commentable_id]" value={@idea.id} />
+          <div>
+            <textarea name="comment[content]" rows="3" class="w-full rounded border px-3 py-2" placeholder="Add a comment"></textarea>
+          </div>
+          <:actions>
+            <.button class="text-sm">Comment</.button>
+          </:actions>
+        </.simple_form>
+      <% end %>
+    </section>
+  </div>
+
+  <div class="space-y-6">
+    <div>
+      <div class="text-sm text-zinc-500">Visibility</div>
+      <div class="font-medium"><%= @idea.visibility %></div>
+      <%= if @current_user do %>
+        <div class="mt-2 text-sm">
+          <.link href={~p"/ideas/#{@idea.id}/edit"} class="underline">Edit idea</.link>
+        </div>
+      <% end %>
+    </div>
+
+    <%= if @shares != [] do %>
+      <div>
+        <h4 class="font-semibold mb-2">Shared with</h4>
+        <ul class="text-sm space-y-1">
+          <%= for s <- @shares do %>
+            <li><%= s.user.email %> – <%= s.permission_level %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= if @current_user && @shares != [] do %>
+      <div>
+        <h4 class="font-semibold mb-2">Share</h4>
+        <.simple_form for={%{}} action={~p"/ideas/#{@idea.id}/shares"}>
+          <input type="email" required name="share[email]" placeholder="user@example.com" class="rounded border px-2 py-1 text-sm w-full" />
+          <select name="share[permission_level]" class="mt-2 rounded border px-2 py-1 text-sm w-full">
+            <option value="view">View</option>
+            <option value="edit">Edit</option>
+          </select>
+          <:actions>
+            <.button class="text-sm mt-2">Share</.button>
+          </:actions>
+        </.simple_form>
+      </div>
+    <% end %>
+  </div>
+</div>
+

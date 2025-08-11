@@ -32,7 +32,9 @@
         </div>
         <div class="flex items-center gap-4">
           <div class="hidden md:block">
-            <input type="search" placeholder="Search" class="w-64 rounded-md border border-zinc-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-0 focus:border-zinc-400" />
+            <form method="get" action={~p"/search"}>
+              <input type="search" name="q" placeholder="Search" class="w-64 rounded-md border border-zinc-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-0 focus:border-zinc-400" />
+            </form>
           </div>
           <button class="rounded p-2 hover:bg-zinc-100" aria-label="Notifications">
             <span class="hero-bell-solid h-5 w-5"></span>
@@ -50,7 +52,7 @@
                 <.link href="#" class="block px-3 py-2 text-sm hover:bg-zinc-50">Profile</.link>
                 <.link href={~p"/users/settings"} class="block px-3 py-2 text-sm hover:bg-zinc-50">Settings</.link>
                 <div class="my-1 border-t"></div>
-                <.link href={~p"/users/log_out"} method="delete" class="block px-3 py-2 text-sm hover:bg-zinc-50">Logout</.link>
+                <.link href={~p"/users/log_out"} method="delete" class="block px-3 py-2 text-sm hover:bg-zinc-50">Log out</.link>
               </div>
             </details>
           <% else %>
@@ -72,19 +74,19 @@
             </.link>
           </li>
           <li>
-            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+            <.link href={~p"/ideas"} class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
               <span class="hero-light-bulb-solid h-5 w-5"></span>
               <span class="label text-sm">My Ideas</span>
             </.link>
           </li>
           <li>
-            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+            <.link href={~p"/shared"} class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
               <span class="hero-user-group-solid h-5 w-5"></span>
               <span class="label text-sm">Shared with Me</span>
             </.link>
           </li>
           <li>
-            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+            <.link href={~p"/starred"} class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
               <span class="hero-star-solid h-5 w-5"></span>
               <span class="label text-sm">Starred</span>
             </.link>

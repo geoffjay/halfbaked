@@ -21,6 +21,9 @@ defmodule HalfbakedWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+    # Public idea show route (allow viewing public ideas without auth)
+    get "/ideas/:id", IdeaController, :show
+    get "/search", SearchController, :index
   end
 
   # Other scopes may use custom stacks.
@@ -70,6 +73,30 @@ defmodule HalfbakedWeb.Router do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
+
+    resources "/ideas", IdeaController, except: [:show]
+    resources "/ideas/:idea_id/plans", PlanController, except: [:index, :show]
+    resources "/plans/:plan_id/tasks", TaskController, except: [:index, :show]
+    resources "/ideas/:idea_id/documents", DocumentController, except: [:index]
+
+    # Comments (polymorphic)
+    post "/comments", CommentController, :create
+    put "/comments/:id", CommentController, :update
+    delete "/comments/:id", CommentController, :delete
+
+    # Stars
+    post "/stars", StarController, :create
+    delete "/stars", StarController, :delete
+    get "/starred", StarController, :index
+
+    # Shares
+    post "/ideas/:id/shares", ShareController, :create
+    get "/shared", ShareController, :index
+
+    # AI tools
+    post "/plans/:id/ai/recommend_tasks", AiController, :recommend_tasks
+    post "/documents/:id/ai/summarize", AiController, :summarize_document
+    post "/documents/:id/ai/complete", AiController, :complete_text
   end
 
   scope "/", HalfbakedWeb do

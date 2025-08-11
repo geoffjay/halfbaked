@@ -1,0 +1,61 @@
+<h2 class="text-xl font-semibold mb-4">Search</h2>
+<form method="get" action={~p"/search"} class="mb-4">
+  <input type="search" name="q" value={@q} placeholder="Search ideas, plans, tasks, documents" class="w-full rounded border px-3 py-2" />
+</form>
+
+<%= if @q != "" do %>
+  <div class="space-y-6">
+    <section>
+      <h3 class="font-semibold mb-2">Ideas</h3>
+      <%= if @results.ideas == [] do %>
+        <div class="text-sm text-zinc-500">No results</div>
+      <% else %>
+        <ul class="list-disc list-inside text-sm">
+          <%= for i <- @results.ideas do %>
+            <li><a href={~p"/ideas/#{i.id}"} class="underline"><%= i.title %></a></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+
+    <section>
+      <h3 class="font-semibold mb-2">Plans</h3>
+      <%= if @results.plans == [] do %>
+        <div class="text-sm text-zinc-500">No results</div>
+      <% else %>
+        <ul class="list-disc list-inside text-sm">
+          <%= for p <- @results.plans do %>
+            <li><%= p.title %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+
+    <section>
+      <h3 class="font-semibold mb-2">Tasks</h3>
+      <%= if @results.tasks == [] do %>
+        <div class="text-sm text-zinc-500">No results</div>
+      <% else %>
+        <ul class="list-disc list-inside text-sm">
+          <%= for t <- @results.tasks do %>
+            <li><%= t.title %> <span class="ml-2 text-xs px-2 py-0.5 rounded border"><%= t.status %></span></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+
+    <section>
+      <h3 class="font-semibold mb-2">Documents</h3>
+      <%= if @results.documents == [] do %>
+        <div class="text-sm text-zinc-500">No results</div>
+      <% else %>
+        <ul class="list-disc list-inside text-sm">
+          <%= for d <- @results.documents do %>
+            <li><%= d.title %></li>
+          <% end %>
+        </ul>
+      <% end %>
+    </section>
+  </div>
+<% end %>
+

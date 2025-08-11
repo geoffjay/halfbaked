@@ -42,9 +42,9 @@ defmodule HalfbakedWeb.UserForgotPasswordLive do
     info =
       "If your email is in our system, you will receive instructions to reset your password shortly."
 
-    {:noreply,
-     socket
-     |> put_flash(:info, info)
-     |> redirect(to: ~p"/")}
+     {:noreply,
+      socket
+      |> put_flash(:info, info)
+      |> redirect(to: ~p"/ideas")}
   end
 end

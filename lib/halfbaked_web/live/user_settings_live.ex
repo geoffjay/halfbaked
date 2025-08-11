@@ -10,6 +10,10 @@ defmodule HalfbakedWeb.UserSettingsLive do
       <:subtitle>Manage your account email address and password settings</:subtitle>
     </.header>
 
+    <%= if assigns[:info_message] do %>
+      <p class="mt-2 text-sm text-zinc-700"><%= @info_message %></p>
+    <% end %>
+
     <div class="space-y-12 divide-y">
       <div>
         <.simple_form
@@ -99,6 +103,7 @@ defmodule HalfbakedWeb.UserSettingsLive do
       |> assign(:email_form, to_form(email_changeset))
       |> assign(:password_form, to_form(password_changeset))
       |> assign(:trigger_submit, false)
+      |> assign(:info_message, nil)
 
     {:ok, socket}
   end
@@ -128,7 +133,11 @@ defmodule HalfbakedWeb.UserSettingsLive do
         )
 
         info = "A link to confirm your email change has been sent to the new address."
-        {:noreply, socket |> put_flash(:info, info) |> assign(email_form_current_password: nil)}
+        {:noreply,
+         socket
+         |> put_flash(:info, info)
+         |> assign(email_form_current_password: nil)
+         |> assign(:info_message, info)}
 
       {:error, changeset} ->
         {:noreply, assign(socket, :email_form, to_form(Map.put(changeset, :action, :insert)))}

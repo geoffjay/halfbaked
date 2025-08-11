@@ -1,0 +1,19 @@
+<div class="flex items-center justify-between mb-4">
+  <h2 class="text-xl font-semibold">My Ideas</h2>
+  <.link href={~p"/ideas/new"} class="px-3 py-1.5 bg-zinc-900 text-white rounded">New Idea</.link>
+  </div>
+<div class="space-y-2">
+  <%= for idea <- @ideas do %>
+    <div class="flex items-center justify-between border rounded px-3 py-2">
+      <div>
+        <a href={~p"/ideas/#{idea.id}"} class="font-medium hover:underline"><%= idea.title %></a>
+        <span class="ml-2 text-xs px-2 py-0.5 rounded border"><%= idea.visibility %></span>
+      </div>
+      <div class="space-x-2 text-sm">
+        <.link href={~p"/ideas/#{idea.id}/edit"} class="text-zinc-700 hover:underline">Edit</.link>
+        <.link href={~p"/ideas/#{idea.id}"} method="delete" data-confirm="Delete this idea?" class="text-red-600 hover:underline">Delete</.link>
+      </div>
+    </div>
+  <% end %>
+</div>
+

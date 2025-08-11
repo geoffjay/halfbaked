@@ -1,0 +1,9 @@
+<h2 class="text-xl font-semibold mb-4">Edit Document</h2>
+<.simple_form for={@changeset} action={~p"/ideas/#{@idea.id}/documents/#{@document.id}"} method="put">
+  <.input field={@changeset[:title]} type="text" label="Title" />
+  <.input field={@changeset[:content]} type="textarea" label="Content" />
+  <:actions>
+    <.button>Save</.button>
+  </:actions>
+</.simple_form>
+

@@ -53,4 +53,43 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   toggleButtons.forEach(btn => btn.addEventListener("click", toggle))
+
+  // AI actions
+  const csrftoken = document.querySelector("meta[name='csrf-token']")?.getAttribute("content")
+  const postJson = async (url, body) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {"content-type": "application/json", "x-csrf-token": csrftoken},
+      body: body ? JSON.stringify(body) : undefined
+    })
+    if (!res.ok) throw new Error("request failed")
+    return res.json()
+  }
+
+  document.querySelectorAll("a[href*='/ai/summarize']").forEach(el => {
+    el.addEventListener("click", async (e) => {
+      e.preventDefault()
+      try {
+        const data = await postJson(el.getAttribute("href"))
+        alert(`Summary:\n\n${data.summary}`)
+      } catch (err) {
+        alert("Pro plan required or request failed")
+      }
+    })
+  })
+
+  document.querySelectorAll("a[href*='/ai/complete']").forEach(el => {
+    el.addEventListener("click", async (e) => {
+      e.preventDefault()
+      const promptText = prompt("Enter prompt text to complete:")
+      if (!promptText) return
+      const href = el.getAttribute("href")
+      try {
+        const data = await postJson(href, {prompt: promptText})
+        alert(`Completion:\n\n${data.completion}`)
+      } catch (err) {
+        alert("Pro plan required or request failed")
+      }
+    })
+  })
 })

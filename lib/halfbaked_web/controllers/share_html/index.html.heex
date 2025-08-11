@@ -1,0 +1,10 @@
+<h2 class="text-xl font-semibold mb-4">Shared with Me</h2>
+<div class="space-y-2">
+  <%= for idea <- @ideas do %>
+    <div class="border rounded px-3 py-2 flex items-center justify-between">
+      <a href={~p"/ideas/#{idea.id}"} class="font-medium hover:underline"><%= idea.title %></a>
+      <span class="text-xs text-zinc-500"><%= idea.visibility %></span>
+    </div>
+  <% end %>
+</div>
+

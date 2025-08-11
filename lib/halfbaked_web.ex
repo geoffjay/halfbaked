@@ -44,6 +44,7 @@ defmodule HalfbakedWeb do
 
       import Plug.Conn
       import HalfbakedWeb.Gettext
+      import HalfbakedWeb.UserAuth
 
       unquote(verified_routes())
     end
