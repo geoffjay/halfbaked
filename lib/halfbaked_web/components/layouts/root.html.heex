@@ -1,58 +1,136 @@
 <!DOCTYPE html>
-<html lang="en" class="[scrollbar-gutter:stable]">
+<html lang="en" class="[scrollbar-gutter:stable] h-full">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="csrf-token" content={get_csrf_token()} />
-    <.live_title suffix=" · Phoenix Framework">
+    <.live_title suffix=" · Halfbaked">
       <%= assigns[:page_title] || "Halfbaked" %>
     </.live_title>
     <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
     <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
     </script>
+    <style>
+      /* simple collapsed state without extra deps */
+      body.sidenav-collapsed #sidenav { width: 4.5rem; }
+      body.sidenav-collapsed #sidenav .label { display: none; }
+      body.sidenav-collapsed #content { padding-left: 4.5rem; }
+    </style>
   </head>
-  <body class="bg-white antialiased">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_user do %>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          {@current_user.email}
-        </li>
-        <li>
-          <.link
-            href={~p"/users/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Settings
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_out"}
-            method="delete"
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log out
-          </.link>
-        </li>
-      <% else %>
-        <li>
-          <.link
-            href={~p"/users/register"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Register
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_in"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log in
-          </.link>
-        </li>
-      <% end %>
-    </ul>
-    <%= @inner_content %>
+  <body class="antialiased h-full bg-slate-100">
+    <!-- Header: fixed top -->
+    <header class="fixed top-0 left-0 right-0 z-40 bg-white border-b">
+      <div class="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3">
+          <button id="sidenav-toggle" class="rounded p-2 hover:bg-zinc-100" aria-label="Toggle navigation" aria-expanded="true">
+            <span class="hero-bars-3-solid h-5 w-5"></span>
+          </button>
+          <a href={~p"/"} class="flex items-center gap-2">
+            <img src={~p"/images/logo.svg"} width="28" />
+            <span class="font-semibold">Halfbaked</span>
+          </a>
+        </div>
+        <div class="flex items-center gap-4">
+          <div class="hidden md:block">
+            <input type="search" placeholder="Search" class="w-64 rounded-md border border-zinc-300 px-3 py-1.5 text-sm focus:outline-none focus:ring-0 focus:border-zinc-400" />
+          </div>
+          <button class="rounded p-2 hover:bg-zinc-100" aria-label="Notifications">
+            <span class="hero-bell-solid h-5 w-5"></span>
+          </button>
+          <%= if @current_user do %>
+            <details class="relative">
+              <summary class="list-none flex items-center gap-2 cursor-pointer select-none">
+                <div class="h-8 w-8 rounded-full bg-zinc-200 flex items-center justify-center text-xs font-semibold">
+                  <%= (@current_user.email || "?") |> String.first() %>
+                </div>
+                <span class="hidden sm:block text-sm"><%= @current_user.email %></span>
+              </summary>
+              <div class="absolute right-0 mt-2 w-48 rounded-md bg-white shadow-md ring-1 ring-zinc-200 py-1">
+                <.link href={~p"/"} class="block px-3 py-2 text-sm hover:bg-zinc-50">Dashboard</.link>
+                <.link href="#" class="block px-3 py-2 text-sm hover:bg-zinc-50">Profile</.link>
+                <.link href={~p"/users/settings"} class="block px-3 py-2 text-sm hover:bg-zinc-50">Settings</.link>
+                <div class="my-1 border-t"></div>
+                <.link href={~p"/users/log_out"} method="delete" class="block px-3 py-2 text-sm hover:bg-zinc-50">Logout</.link>
+              </div>
+            </details>
+          <% else %>
+            <.link href={~p"/users/register"} class="text-sm font-semibold">Register</.link>
+            <.link href={~p"/users/log_in"} class="text-sm font-semibold">Log in</.link>
+          <% end %>
+        </div>
+      </div>
+    </header>
+
+    <!-- Sidenav: fixed left -->
+    <aside id="sidenav" class="fixed top-16 bottom-12 left-0 z-30 w-64 bg-white border-r overflow-y-auto transition-all">
+      <nav class="py-4">
+        <ul class="space-y-1 px-2">
+          <li>
+            <.link href={~p"/"} class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+              <span class="hero-home-solid h-5 w-5"></span>
+              <span class="label text-sm">Dashboard</span>
+            </.link>
+          </li>
+          <li>
+            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+              <span class="hero-light-bulb-solid h-5 w-5"></span>
+              <span class="label text-sm">My Ideas</span>
+            </.link>
+          </li>
+          <li>
+            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+              <span class="hero-user-group-solid h-5 w-5"></span>
+              <span class="label text-sm">Shared with Me</span>
+            </.link>
+          </li>
+          <li>
+            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+              <span class="hero-star-solid h-5 w-5"></span>
+              <span class="label text-sm">Starred</span>
+            </.link>
+          </li>
+          <li>
+            <.link href="#" class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+              <span class="hero-information-circle-solid h-5 w-5"></span>
+              <span class="label text-sm">About</span>
+            </.link>
+          </li>
+          <li>
+            <.link href={~p"/users/settings"} class="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50">
+              <span class="hero-cog-6-tooth-solid h-5 w-5"></span>
+              <span class="label text-sm">Settings</span>
+            </.link>
+          </li>
+        </ul>
+        <div class="mt-6 px-2">
+          <button id="sidenav-toggle-bottom" class="w-full flex items-center gap-3 rounded-md px-3 py-2 hover:bg-zinc-50 text-sm" aria-label="Collapse sidebar">
+            <span class="hero-chevron-double-left-solid h-5 w-5"></span>
+            <span class="label">Collapse</span>
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Content Area: scrollable -->
+    <main id="content" class="pt-16 pb-12 pl-64">
+      <div class="min-h-[calc(100vh-4rem-3rem)] p-4 sm:p-6">
+        <div class="rounded-lg shadow-md bg-white p-4 sm:p-6">
+          <.flash_group flash={@flash} />
+          <%= @inner_content %>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer: fixed bottom -->
+    <footer class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t">
+      <div class="h-12 flex items-center justify-between px-4 sm:px-6 lg:px-8 text-sm">
+        <p>© 2024 halfbaked</p>
+        <div class="flex items-center gap-4">
+          <a href="#" class="hover:underline">Terms of Service</a>
+          <a href="#" class="hover:underline">Privacy Policy</a>
+          <a href="#" class="hover:underline">About</a>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

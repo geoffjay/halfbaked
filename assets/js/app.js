@@ -41,3 +41,16 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
+// Sidenav toggle for main layout
+window.addEventListener("DOMContentLoaded", () => {
+  const toggleButtons = [
+    document.getElementById("sidenav-toggle"),
+    document.getElementById("sidenav-toggle-bottom")
+  ].filter(Boolean)
+
+  const toggle = () => {
+    document.body.classList.toggle("sidenav-collapsed")
+  }
+
+  toggleButtons.forEach(btn => btn.addEventListener("click", toggle))
+})

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" class="[scrollbar-gutter:stable] h-full">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · Halfbaked">
+      <%= assigns[:page_title] || "Halfbaked" %>
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+  </head>
+  <body class="h-full bg-slate-100 antialiased">
+    <div class="min-h-full flex flex-col items-center justify-center p-6">
+      <a href={~p"/"} class="mb-6 flex items-center gap-2">
+        <img src={~p"/images/logo.svg"} width="48" />
+        <span class="text-xl font-semibold">Halfbaked</span>
+      </a>
+      <div class="w-full max-w-md rounded-lg bg-white shadow-md p-6">
+        <.flash_group flash={@flash} />
+        <%= @inner_content %>
+      </div>
+    </div>
+  </body>
+</html>

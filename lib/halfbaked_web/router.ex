@@ -51,7 +51,8 @@ defmodule HalfbakedWeb.Router do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
 
     live_session :redirect_if_user_is_authenticated,
-      on_mount: [{HalfbakedWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      on_mount: [{HalfbakedWeb.UserAuth, :redirect_if_user_is_authenticated}],
+      root_layout: {HalfbakedWeb.Layouts, :auth} do
       live "/users/register", UserRegistrationLive, :new
       live "/users/log_in", UserLoginLive, :new
       live "/users/reset_password", UserForgotPasswordLive, :new
